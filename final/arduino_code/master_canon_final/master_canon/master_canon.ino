@@ -124,9 +124,6 @@ void loop()
   int StopStatus = ledStatus[3];
   int DelayVal = ledStatus[4];
 
-
-
-
   if (ledStatus[3] != 1) {
     getDataFromPC();
     switchLEDs();
@@ -158,8 +155,6 @@ void loop()
       switchLEDs();
 
         int cam1 = 11;
-        int cam48 = 58;
-        int cam49 = 59;
         int cam50 = 60;
 //          int DelayVal = ledStatus[11-7]; // delay vals start at index 4
 
@@ -217,7 +212,7 @@ void loop()
   
             ledStatus[1] = 0;         // shutter OFF
 
-//            FocusStatus = ledStatus[0];
+            FocusStatus = ledStatus[0];
             ShutterStatus = ledStatus[1];
 //            Serial.print("<FocusStatus = ");
 //            Serial.print(FocusStatus);
@@ -237,6 +232,9 @@ void loop()
     if (station == 1) {
       getDataFromPC();
       switchLEDs();
+    if (PhysFocusStatus == 1)
+      FocusStatus = 1;
+
 
       if (FocusStatus == 1){// || PhysFocusStatus == 1) { //digitalRead(3) == LOW ||
         ICSC.send(0, 'F', 0, NULL);
