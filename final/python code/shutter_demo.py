@@ -192,7 +192,8 @@ def getTableVals():
 
     DelayVal = map(int, DelayVal)
 
-    # print FocusStatus, ShutterStatus, LoopVal, StopStatus, DelayVal
+    print FocusStatus, ShutterStatus, LoopVal, StopStatus, DelayVal
+    
     aC.valToArduino(FocusStatus, ShutterStatus, LoopVal, StopStatus, DelayVal)
     # return DelayVal
 

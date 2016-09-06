@@ -38,7 +38,7 @@ def valToArduino(Focus, Shutter, Loop, Stop, Delay):
 #========================
 
 def listSerialPorts():
-	# http://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
+    # http://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
 
     """Lists serial ports
 
@@ -73,72 +73,75 @@ def listSerialPorts():
 
 def setupSerial(serPort):
 
-	global  ser
+    global  ser
 
-	baudRate = 19200 # 115200 # 
-	ser = serial.Serial(serPort, baudRate)
-	print "Serial port " + serPort + " opened  Baudrate " + str(baudRate)
+    baudRate = 19200 # 115200 # 
+    ser = serial.Serial(serPort, baudRate)
+    print "Serial port " + serPort + " opened  Baudrate " + str(baudRate)
 
-	waitForArduino()
+    waitForArduino()
 
 #========================
 
 def closeSerial():
 
-	global ser
-	if 'ser' in globals():
-		ser.close()
-		print "Serial Port Closed"
-	else:
-		print "Serial Port Not Opened"
+    global ser
+    if 'ser' in globals():
+        ser.close()
+        print "Serial Port Closed"
+    else:
+        print "Serial Port Not Opened"
 
 #========================
 
 def sendToArduino(sendStr):
 
-	global startMarker, endMarker, ser
+    global startMarker, endMarker, ser
 
-	# print 'sendStr', sendStr
-	# print 'ARDUINO:',ser.readline() # Read the newest output from the Arduino
+    print 'sendStr', sendStr
+    # print 'ARDUINO:',ser.readline() # Read the newest output from the Arduino
 
-	ser.write(chr(startMarker))
-	ser.write(sendStr)
-	ser.write(chr(endMarker))
+    ser.write(chr(startMarker))
+    ser.write(sendStr)
+    ser.write(chr(endMarker))
 
 
 #===========================
 
 def recvFromArduino(timeOut): # timeout in seconds eg 1.5
 
-	global startMarker, endMarker, ser
+    global startMarker, endMarker, ser
 
-	#~ print "Called with T-O %s" %(timeOut)
+    #~ print "Called with T-O %s" %(timeOut)
 
-	dataBuf = ""
-	x = "z" # any value that is not an end- or startMarker
-	startTime = time.time()
+    dataBuf = ""
+    x = "z" # any value that is not an end- or startMarker
+    startTime = time.time()
 
-	# wait for the start marker
-	while  ord(x) != startMarker:
-		if time.time() - startTime >= timeOut:
-			return('<<')
-		if ser.inWaiting() > 0: # because ser.read() blocks
-			x = ser.read()
+    # wait for the start marker
+    while  ord(x) != startMarker:
+        if time.time() - startTime >= timeOut:
+            return('<<')
+        if ser.inWaiting() > 0: # because ser.read() blocks
+            x = ser.read()
 
 
-	# save data until the end marker is found
-	while ord(x) != endMarker:
-		if time.time() - startTime >= timeOut:
-			return('>>')
-		if ord(x) != startMarker:
-			dataBuf = dataBuf + x
-		if ser.inWaiting() > 0:
-			x = ser.read()
-		else:
-			x = chr(startMarker) # crude way to prevent repeat characters
-								 #   when no data is received
+    # save data until the end marker is found
+    while ord(x) != endMarker:
+        if time.time() - startTime >= timeOut:
+            return('>>')
+        if ord(x) != startMarker:
+            dataBuf = dataBuf + x
+        if ser.inWaiting() > 0:
+            x = ser.read()
+        else:
+            x = chr(startMarker) # crude way to prevent repeat characters
+                                 #   when no data is received
 
-	return(dataBuf)
+
+    # print out ARDUINO content in this format: Serial.print("<DelayVal>");
+    print dataBuf
+    return(dataBuf)
 
 #============================
 
@@ -148,12 +151,12 @@ def waitForArduino():
    # wait until the Arduino sends 'Arduino Ready' - allows time for Arduino reset
    # it also ensures that any bytes left over from a previous message are discarded
 
-	print "Waiting for Arduino to reset"
+    print "Waiting for Arduino to reset"
 
-	msg = ""
-	while msg.find("Arduino is ready") == -1:
+    msg = ""
+    while msg.find("Arduino is ready") == -1:
 
-		msg = recvFromArduino(10)
+        msg = recvFromArduino(10)
 
-		print msg
-		print
+        print msg
+        print
