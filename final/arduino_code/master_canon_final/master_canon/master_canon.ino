@@ -95,7 +95,7 @@ void setup()
 
 void loop()
 {
-  
+
   ICSC.process(); //check for incoming packets from slaves
   //  currentMillis = millis();
   //  checkActions(); //sends next ICSC action, if the delay is expired
@@ -105,15 +105,15 @@ void loop()
   unsigned long currentMillis = millis();
   int phys_shutter = analogRead(A5);
 
-//    Serial.println(analogRead(A3));
-    if(((analogRead(A3)-old) != 1023) && ((old != 1023)))
-      PhysFocusStatus = 0;
+  //    Serial.println(analogRead(A3));
+  if (((analogRead(A3) - old) != 1023) && ((old != 1023)))
+    PhysFocusStatus = 0;
   //    ICSC.send(0, 'C', 0, NULL);
-      else
-  //    ICSC.send(0, 'F', 0, NULL);
-      PhysFocusStatus = 1;
-//
-//  Serial.flush();
+  else
+    //    ICSC.send(0, 'F', 0, NULL);
+    PhysFocusStatus = 1;
+  //
+  //  Serial.flush();
 
   getDataFromPC();
   switchLEDs();
@@ -121,132 +121,416 @@ void loop()
   int FocusStatus = ledStatus[0];
   int ShutterStatus = ledStatus[1];
   int LoopVal = ledStatus[2];
-  int StopStatus = ledStatus[3];
+  int ReverseStatus = ledStatus[3];
   int DelayVal = ledStatus[4];
 
-  if (ledStatus[3] != 1) {
+  //  if (ledStatus[3] != 1) {
+  getDataFromPC();
+  switchLEDs();
+
+  //  Serial.println(phys_shutter);
+  // If the switch changed, due to noise or pressing:
+  if (phys_shutter != lastphys_shutter_state) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+    getDataFromPC();
+    switchLEDs();
+  }
+
+
+  if (phys_shutter == 1023) {
+
+    ShutterStatus = 1;
+
+    if (ledStatus[2] != 0) {
+      ShutterStatus = 1;
+    }
+
+  }
+
+  // BEGIN FORWARD DIRECTION ----------------------------------
+  if (ShutterStatus == 1)  {
+
+    //      else if (DelayVal != 0 && ShutterStatus == 1) {
     getDataFromPC();
     switchLEDs();
 
-//  Serial.println(phys_shutter);
-    // If the switch changed, due to noise or pressing:
-    if (phys_shutter != lastphys_shutter_state) {
-      // reset the debouncing timer
-      lastDebounceTime = millis();
-      getDataFromPC();
-      switchLEDs();
+    int cam1 = 11;
+    int cam50 = 60;
+    //          int DelayVal = ledStatus[11-7]; // delay vals start at index 4
+
+    if (DelayVal == 0) {
+      ICSC.send(0, 'S', 0, NULL);
+      ledStatus[1] = 0;
     }
 
+    else
+    {
 
-      if (phys_shutter == 1023) {
-            
-              ShutterStatus = 1;
-
-          if (ledStatus[2] != 0) {
-            ShutterStatus = 1;
-          }
-              
-          }
-
-    if (ShutterStatus == 1)  {
-
-//      else if (DelayVal != 0 && ShutterStatus == 1) {
-      getDataFromPC();
-      switchLEDs();
-
-        int cam1 = 11;
-        int cam50 = 60;
-//          int DelayVal = ledStatus[11-7]; // delay vals start at index 4
-
-          if (DelayVal == 0) {
-            ICSC.send(0, 'S', 0, NULL);
-            ledStatus[1] = 0;
-          }
-
-        else
-        {
+      if (ReverseStatus == 0) {
         // you can't realistically loop more than 1 time with 0 delay, so leave 0 delay outside of loopval loop
-        while(LoopVal != 0){ // while LoopVal != 0
+        while (LoopVal != 0) { // while LoopVal != 0
           for (int i = cam1; i <= cam50; i++) {
 
-//              Serial.print("<DelayVal_");
-//              Serial.print(i-10);
-//              Serial.print(" = ");
-//              Serial.print(ledStatus[i-7]);
-//              Serial.print(">");
-//              delay(100);
-            
+            //              Serial.print("<DelayVal_");
+            //              Serial.print(i-10);
+            //              Serial.print(" = ");
+            //              Serial.print(ledStatus[i-7]);
+            //              Serial.print(">");
+            //              delay(100);
+
             ICSC.send(i, 'S', 0, NULL); // Shutter i
 
-          if (DelayVal != 0)
-          {
-            
-            if (DelayVal == 1)
-              delayMicroseconds(0.8191998424 * 1 * 1000);
-            else if (DelayVal == 2)
-              delayMicroseconds(0.9103046487 * 2 * 1000);
-            else if (DelayVal == 3)
-              delayMicroseconds(0.9484942339 * 3 * 1000);
-            else if (DelayVal == 4)
-              delayMicroseconds(0.9593908629 * 4 * 1000);
-            else if (DelayVal == 5)
-              delayMicroseconds(0.9659639437 * 5 * 1000);
-            else if (DelayVal == 6)
-              delayMicroseconds(0.9678779935 * 6 * 1000);
-//              delayMicroseconds(10000);
-            else if (DelayVal == 7)
-              delayMicroseconds(0.9722222222 * 7 * 1000);            
-            else if (DelayVal == 8)
-              delayMicroseconds(0.971659919 * 8 * 1000);      
-            else if (DelayVal == 9)
-              delayMicroseconds(0.9791208791 * 9 * 1000);                    
-   
-  
+            if (DelayVal != 0)
+            {
 
-            else
+              if (DelayVal == 1)
+                delayMicroseconds(0.8191998424 * 1 * 1000);
+              else if (DelayVal == 2)
+                delayMicroseconds(0.9103046487 * 2 * 1000);
+              else if (DelayVal == 3)
+                delayMicroseconds(0.9484942339 * 3 * 1000);
+              else if (DelayVal == 4)
+                delayMicroseconds(0.9593908629 * 4 * 1000);
+              else if (DelayVal == 5)
+                delayMicroseconds(0.9659639437 * 5 * 1000);
+              else if (DelayVal == 6)
+                delayMicroseconds(0.9678779935 * 6 * 1000);
+              else if (DelayVal == 7)
+                delayMicroseconds(0.9722222222 * 7 * 1000);
+              else if (DelayVal == 8)
+                delayMicroseconds(0.971659919 * 8 * 1000);
+              else if (DelayVal == 9)
+                delayMicroseconds(0.9791208791 * 9 * 1000);
+              else
+                delay(ledStatus[i - 7]);
+            }
 
-                delay(ledStatus[i-7]);
-              
-
-          }
-  
             ledStatus[1] = 0;         // shutter OFF
 
             FocusStatus = ledStatus[0];
             ShutterStatus = ledStatus[1];
-//            Serial.print("<FocusStatus = ");
-//            Serial.print(FocusStatus);
-//            Serial.print(" ledStatus[0]  ");
-//            Serial.print(ledStatus[0] );
-//            Serial.print(">");
+            //            Serial.print("<FocusStatus = ");
+            //            Serial.print(FocusStatus);
+            //            Serial.print(" ledStatus[0]  ");
+            //            Serial.print(ledStatus[0] );
+            //            Serial.print(">");
 
-  
+
           }
           if (LoopVal >= 0)
-          LoopVal = LoopVal - 1; // decrement LoopVal
+            LoopVal = LoopVal - 1; // decrement LoopVal
+        }
       }
-    }
-    }
-    // Focus stuff
 
-    if (station == 1) {
-      getDataFromPC();
-      switchLEDs();
+      // BEGIN REVERSE MODE
+      else if (ReverseStatus == 1) {  // REVERSE MODE
+        // you can't realistically loop more than 1 time with 0 delay, so leave 0 delay outside of loopval loop
+        while (LoopVal != 0) { // while LoopVal != 0
+          for (int i = cam50; i >= cam1; i--) {
+
+            //              Serial.print("<DelayVal_");
+            //              Serial.print(i-10);
+            //              Serial.print(" = ");
+            //              Serial.print(ledStatus[i-7]);
+            //              Serial.print(">");
+
+            ICSC.send(i, 'S', 0, NULL); // Shutter i
+
+            if (DelayVal != 0)
+            {
+
+              if (DelayVal == 1)
+                delayMicroseconds(0.8191998424 * 1 * 1000);
+              else if (DelayVal == 2)
+                delayMicroseconds(0.9103046487 * 2 * 1000);
+              else if (DelayVal == 3)
+                delayMicroseconds(0.9484942339 * 3 * 1000);
+              else if (DelayVal == 4)
+                delayMicroseconds(0.9593908629 * 4 * 1000);
+              else if (DelayVal == 5)
+                delayMicroseconds(0.9659639437 * 5 * 1000);
+              else if (DelayVal == 6)
+                delayMicroseconds(0.9678779935 * 6 * 1000);
+              else if (DelayVal == 7)
+                delayMicroseconds(0.9722222222 * 7 * 1000);
+              else if (DelayVal == 8)
+                delayMicroseconds(0.971659919 * 8 * 1000);
+              else if (DelayVal == 9)
+                delayMicroseconds(0.9791208791 * 9 * 1000);
+              else
+                delay(ledStatus[i - 7]);
+            }
+
+            ledStatus[1] = 0;         // shutter OFF
+
+            FocusStatus = ledStatus[0];
+            ShutterStatus = ledStatus[1];
+            //            Serial.print("<FocusStatus = ");
+            //            Serial.print(FocusStatus);
+            //            Serial.print(" ledStatus[0]  ");
+            //            Serial.print(ledStatus[0] );
+            //            Serial.print(">");
+
+
+          }
+          if (LoopVal >= 0)
+            LoopVal = LoopVal - 1; // decrement LoopVal
+        }
+      }
+
+      else if (ReverseStatus == 2) {  // BOUNCE BACK MODE V1
+        // you can't realistically loop more than 1 time with 0 delay, so leave 0 delay outside of loopval loop
+        while (LoopVal != 0) { // while LoopVal != 0
+
+
+          // GO FORWARD FIRST
+          for (int i = cam1; i <= cam50; i++) {
+
+//            Serial.print("<BOUNCEBACK V1 FORWARD DelayVal_");
+//            Serial.print(i - 10);
+//            Serial.print(" = ");
+//            Serial.print(ledStatus[i - 7]);
+//            Serial.print(">");
+
+            ICSC.send(i, 'S', 0, NULL); // Shutter i
+
+            if (DelayVal != 0)
+            {
+
+              if (DelayVal == 1)
+                delayMicroseconds(0.8191998424 * 1 * 1000);
+              else if (DelayVal == 2)
+                delayMicroseconds(0.9103046487 * 2 * 1000);
+              else if (DelayVal == 3)
+                delayMicroseconds(0.9484942339 * 3 * 1000);
+              else if (DelayVal == 4)
+                delayMicroseconds(0.9593908629 * 4 * 1000);
+              else if (DelayVal == 5)
+                delayMicroseconds(0.9659639437 * 5 * 1000);
+              else if (DelayVal == 6)
+                delayMicroseconds(0.9678779935 * 6 * 1000);
+              else if (DelayVal == 7)
+                delayMicroseconds(0.9722222222 * 7 * 1000);
+              else if (DelayVal == 8)
+                delayMicroseconds(0.971659919 * 8 * 1000);
+              else if (DelayVal == 9)
+                delayMicroseconds(0.9791208791 * 9 * 1000);
+              else
+                delay(ledStatus[i - 7]);
+            }
+
+            ledStatus[1] = 0;         // shutter OFF
+
+            FocusStatus = ledStatus[0];
+            ShutterStatus = ledStatus[1];
+            //            Serial.print("<FocusStatus = ");
+            //            Serial.print(FocusStatus);
+            //            Serial.print(" ledStatus[0]  ");
+            //            Serial.print(ledStatus[0] );
+            //            Serial.print(">");
+
+
+          }
+
+
+          // NOW GO BACKWARDS
+          for (int i = cam50-1; i > cam1; i--) { // START BB V1 REVERSE AT CAM49 and end at CAM 2
+
+//            Serial.print("<BOUNCEBACK V1 REVERSE DelayVal_");
+//            Serial.print(i - 10);
+//            Serial.print(" = ");
+//            Serial.print(ledStatus[i - 7]);
+//            Serial.print(">");
+
+            ICSC.send(i, 'S', 0, NULL); // Shutter i
+
+            if (DelayVal != 0)
+            {
+
+              if (DelayVal == 1)
+                delayMicroseconds(0.8191998424 * 1 * 1000);
+              else if (DelayVal == 2)
+                delayMicroseconds(0.9103046487 * 2 * 1000);
+              else if (DelayVal == 3)
+                delayMicroseconds(0.9484942339 * 3 * 1000);
+              else if (DelayVal == 4)
+                delayMicroseconds(0.9593908629 * 4 * 1000);
+              else if (DelayVal == 5)
+                delayMicroseconds(0.9659639437 * 5 * 1000);
+              else if (DelayVal == 6)
+                delayMicroseconds(0.9678779935 * 6 * 1000);
+              else if (DelayVal == 7)
+                delayMicroseconds(0.9722222222 * 7 * 1000);
+              else if (DelayVal == 8)
+                delayMicroseconds(0.971659919 * 8 * 1000);
+              else if (DelayVal == 9)
+                delayMicroseconds(0.9791208791 * 9 * 1000);
+              else
+                delay(ledStatus[i - 7]);
+            }
+
+            ledStatus[1] = 0;         // shutter OFF
+
+            FocusStatus = ledStatus[0];
+            ShutterStatus = ledStatus[1];
+            //            Serial.print("<FocusStatus = ");
+            //            Serial.print(FocusStatus);
+            //            Serial.print(" ledStatus[0]  ");
+            //            Serial.print(ledStatus[0] );
+            //            Serial.print(">");
+
+
+          }
+          if (LoopVal >= 0)
+            LoopVal = LoopVal - 1; // decrement LoopVal
+        }
+        ICSC.send(cam1, 'S', 0, NULL); // Shutter cam 1 final time
+        
+//        Serial.print("<FINAL BOUNCEBACK V1 REVERSE DelayVal_");
+//        Serial.print(1);
+//        Serial.print(" = ");
+//        Serial.print(1);
+//        Serial.print(">");
+
+      }
+
+      else if (ReverseStatus == 3) {  // BOUNCE BACK MODE V2
+        // you can't realistically loop more than 1 time with 0 delay, so leave 0 delay outside of loopval loop
+        while (LoopVal != 0) { // while LoopVal != 0
+
+
+          // GO FORWARD FIRST
+          for (int i = cam1; i <= cam50; i++) {
+
+//            Serial.print("<BOUNCEBACK V2 FORWARD DelayVal_");
+//            Serial.print(i - 10);
+//            Serial.print(" = ");
+//            Serial.print(ledStatus[i - 7]);
+//            Serial.print(">");
+
+
+            ICSC.send(i, 'S', 0, NULL); // Shutter i
+
+            if (DelayVal != 0)
+            {
+
+              if (DelayVal == 1)
+                delayMicroseconds(0.8191998424 * 1 * 1000);
+              else if (DelayVal == 2)
+                delayMicroseconds(0.9103046487 * 2 * 1000);
+              else if (DelayVal == 3)
+                delayMicroseconds(0.9484942339 * 3 * 1000);
+              else if (DelayVal == 4)
+                delayMicroseconds(0.9593908629 * 4 * 1000);
+              else if (DelayVal == 5)
+                delayMicroseconds(0.9659639437 * 5 * 1000);
+              else if (DelayVal == 6)
+                delayMicroseconds(0.9678779935 * 6 * 1000);
+              else if (DelayVal == 7)
+                delayMicroseconds(0.9722222222 * 7 * 1000);
+              else if (DelayVal == 8)
+                delayMicroseconds(0.971659919 * 8 * 1000);
+              else if (DelayVal == 9)
+                delayMicroseconds(0.9791208791 * 9 * 1000);
+              else
+                delay(ledStatus[i - 7]);
+            }
+
+            ledStatus[1] = 0;         // shutter OFF
+
+            FocusStatus = ledStatus[0];
+            ShutterStatus = ledStatus[1];
+            //            Serial.print("<FocusStatus = ");
+            //            Serial.print(FocusStatus);
+            //            Serial.print(" ledStatus[0]  ");
+            //            Serial.print(ledStatus[0] );
+            //            Serial.print(">");
+
+
+          }
+
+
+          // NOW GO BACKWARDS
+          for (int i = cam50; i >= cam1; i--) { // START AT CAM 50 IN BB V2
+
+//            Serial.print("<BOUNCEBACK V2 REVERSE DelayVal_");
+//            Serial.print(i - 10);
+//            Serial.print(" = ");
+//            Serial.print(ledStatus[i - 7]);
+//            Serial.print(">");
+//            delay(100);
+
+            ICSC.send(i, 'S', 0, NULL); // Shutter i
+
+            if (DelayVal != 0)
+            {
+
+              if (DelayVal == 1)
+                delayMicroseconds(0.8191998424 * 1 * 1000);
+              else if (DelayVal == 2)
+                delayMicroseconds(0.9103046487 * 2 * 1000);
+              else if (DelayVal == 3)
+                delayMicroseconds(0.9484942339 * 3 * 1000);
+              else if (DelayVal == 4)
+                delayMicroseconds(0.9593908629 * 4 * 1000);
+              else if (DelayVal == 5)
+                delayMicroseconds(0.9659639437 * 5 * 1000);
+              else if (DelayVal == 6)
+                delayMicroseconds(0.9678779935 * 6 * 1000);
+              else if (DelayVal == 7)
+                delayMicroseconds(0.9722222222 * 7 * 1000);
+              else if (DelayVal == 8)
+                delayMicroseconds(0.971659919 * 8 * 1000);
+              else if (DelayVal == 9)
+                delayMicroseconds(0.9791208791 * 9 * 1000);
+              else
+                delay(ledStatus[i - 7]);
+            }
+
+            ledStatus[1] = 0;         // shutter OFF
+
+            FocusStatus = ledStatus[0];
+            ShutterStatus = ledStatus[1];
+            //            Serial.print("<FocusStatus = ");
+            //            Serial.print(FocusStatus);
+            //            Serial.print(" ledStatus[0]  ");
+            //            Serial.print(ledStatus[0] );
+            //            Serial.print(">");
+
+
+          }
+          if (LoopVal >= 0)
+            LoopVal = LoopVal - 1; // decrement LoopVal
+        }
+
+      }
+
+
+
+    }
+  }
+  // END shutter stuff ---------------
+
+  // Focus stuff
+
+  if (station == 1) {
+    getDataFromPC();
+    switchLEDs();
     if (PhysFocusStatus == 1)
       FocusStatus = 1;
 
 
-      if (FocusStatus == 1){// || PhysFocusStatus == 1) { //digitalRead(3) == LOW ||
-        ICSC.send(0, 'F', 0, NULL);
-        digitalWrite(13, HIGH);
-      }
-
-      else if (FocusStatus == 0) {
-        ICSC.send(0, 'C', 0, NULL);
-        digitalWrite(13, LOW);
-      }
-
+    if (FocusStatus == 1) { // || PhysFocusStatus == 1) { //digitalRead(3) == LOW ||
+      ICSC.send(0, 'F', 0, NULL);
+      digitalWrite(13, HIGH);
     }
+
+    else if (FocusStatus == 0) {
+      ICSC.send(0, 'C', 0, NULL);
+      digitalWrite(13, LOW);
+    }
+
   }
 
   currentMillis = millis();
@@ -304,9 +588,9 @@ void getDataFromPC() {
   if (Serial.available() > 0) {
 
     char x = Serial.read();
-//    Serial.print("<inputBuffer = ");
-//    Serial.print(inputBuffer);
-//    Serial.print(">");
+    //    Serial.print("<inputBuffer = ");
+    //    Serial.print(inputBuffer);
+    //    Serial.print(">");
 
     // the order of these IF clauses is significant
 
@@ -344,32 +628,32 @@ void parseData() {
 
   strtokIndx = strtok(inputBuffer, ","); // get the first part
   ledStatus[0] = atoi(strtokIndx); //  convert to an integer
-//  Serial.print("<MATT ledStatus[");
-//  Serial.print(0);
-//  Serial.print("]");
-//  Serial.print(ledStatus[0]);
-//  Serial.print(">");
+  //  Serial.print("<MATT ledStatus[");
+  //  Serial.print(0);
+  //  Serial.print("]");
+  //  Serial.print(ledStatus[0]);
+  //  Serial.print(">");
 
-// delay obtaining section
-    for (int i = 1; i <= 53; i++){ // number of elements in incoming string is 53
-      strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
-      ledStatus[i] = atoi(strtokIndx);
-      if (i == 53){
-        if (ledStatus[52] == 1000){
-          if (ledStatus[4] == 1000){
-            if(ledStatus[53] == 10)
-              ledStatus[53] = 1000;
-          }
+  // delay obtaining section
+  for (int i = 1; i <= 53; i++) { // number of elements in incoming string is 53
+    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+    ledStatus[i] = atoi(strtokIndx);
+    if (i == 53) {
+      if (ledStatus[52] == 1000) {
+        if (ledStatus[4] == 1000) {
+          if (ledStatus[53] == 10)
+            ledStatus[53] = 1000;
         }
       }
-
-      
-//      Serial.print("<MATT ledStatus[");
-//      Serial.print(i);
-//      Serial.print("]");
-//      Serial.print(ledStatus[i]);
-//      Serial.print(">");
     }
+
+
+    //    Serial.print("<MATT ledStatus[");
+    //    Serial.print(i);
+    //    Serial.print("]");
+    //    Serial.print(ledStatus[i]);
+    //    Serial.print(">");
+  }
 
 
 }

@@ -10,16 +10,16 @@ endMarker = 62
 
 #========================
 
-def valToArduino(Focus, Shutter, Loop, Stop, Delay):
+def valToArduino(Focus, Shutter, Loop, Reverse, Delay):
     
     # Delay = list(500 * np.ones(50, dtype=int))
     print Loop
 
     # print len(Delay)
 
-    # sendStr = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" %(Focus, Shutter, Loop, Stop, Delay[00], Delay[01], Delay[02], Delay[03], Delay[04], Delay[05], Delay[06], Delay[07], Delay[08], Delay[09], Delay[10], Delay[11], Delay[12], Delay[13], Delay[14], Delay[15], Delay[16], Delay[17], Delay[18], Delay[19])
+    # sendStr = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" %(Focus, Shutter, Loop, Reverse, Delay[00], Delay[01], Delay[02], Delay[03], Delay[04], Delay[05], Delay[06], Delay[07], Delay[08], Delay[09], Delay[10], Delay[11], Delay[12], Delay[13], Delay[14], Delay[15], Delay[16], Delay[17], Delay[18], Delay[19])
 
-    sendStr = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" % (Focus, Shutter, Loop, Stop, 
+    sendStr = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" % (Focus, Shutter, Loop, Reverse, 
     Delay[0], Delay[1], Delay[2], Delay[3], Delay[4], Delay[5], Delay[6], Delay[7], Delay[8], Delay[9], 
     Delay[10], Delay[11], Delay[12], Delay[13], Delay[14], Delay[15], Delay[16], Delay[17], Delay[18], Delay[19], 
     Delay[20], Delay[21], Delay[22], Delay[23], Delay[24], Delay[25], Delay[26], Delay[27], Delay[28], Delay[29], 
