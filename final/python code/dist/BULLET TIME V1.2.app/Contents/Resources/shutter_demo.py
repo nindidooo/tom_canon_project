@@ -17,16 +17,6 @@ def center(toplevel):
     y = h/2 - size[1]/2
     toplevel.geometry("%dx%d+%d+%d" % (size + (x, y)))
 
-# =========================
-# code to ensure a clean exit
-
-
-def exit_handler():
-    print 'Quitting...'
-    cD.stopListening()
-    aC.closeSerial()
-
-atexit.register(exit_handler)
 
 # ===========================
 # global variables for this module
@@ -221,9 +211,12 @@ def getTableVals():
     for row in table_rows:
         for col in row:
             DelayVal.append(col.get())
-
+    total_delay = 0
     DelayVal = map(int, DelayVal)
-
+    for i in DelayVal:
+        total_delay += i
+    if total_delay == 0:
+        DelayVal[0] = -1
     print FocusStatus, ShutterStatus, LoopVal, ReverseStatus, DelayVal
     
     aC.valToArduino(FocusStatus, ShutterStatus, LoopVal, ReverseStatus, DelayVal)
@@ -346,9 +339,29 @@ def radioBtnPress():
 def quit(event=None):
     root.destroy()
 
+
 quit_button = Button(text='Quit', command=quit)
 quit_button.pack(side='top', pady=5, fill='x')
 root.bind('<q>', quit)
+
+# =========================
+# code to ensure a clean exit
+
+
+def exit_handler():
+    print 'Quitting...'
+    global FocusStatus, ReverseStatus, ShutterStatus, LoopVal, DelayVal, table_rows
+    FocusStatus = 0
+    ReverseStatus = 0
+    ShutterStatus = 0
+
+    aC.valToArduino(FocusStatus, ShutterStatus, LoopVal, ReverseStatus, DelayVal)
+    cD.stopListening()
+    aC.closeSerial()
+
+atexit.register(exit_handler)
+
+
 
 # ======================
 # code to start the whole process

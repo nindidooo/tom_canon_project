@@ -56,7 +56,7 @@ void setup()
   /*** master does not need DE pin on full duplex,
        it's the only driver on the downward bus,
        driver should be enabled by jumper on shield. ***/
-  ICSC.begin(master, 115200, &Serial3);
+//  ICSC.begin(master, 115200, &Serial3);
   ICSC.registerCommand('P', &pingBack);
 
   Serial.begin(19200);

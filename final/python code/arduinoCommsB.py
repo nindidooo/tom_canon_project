@@ -28,8 +28,9 @@ def valToArduino(Focus, Shutter, Loop, Reverse, Delay):
 
     # print "SENDSTR %s" %( sendStr)
     # print list(sendStr)
-
-
+    print 'Sending delays'
+    for i, j in zip(Delay, range(len(Delay))):
+        print 'Software Delay val_', j, i
 
     print 'sendStr', sendStr
     sendToArduino(sendStr)
@@ -54,8 +55,11 @@ def listSerialPorts():
         # this is to exclude your current terminal "/dev/tty"
         ports = glob.glob('/dev/tty[A-Za-z]*')
 
+    # elif sys.platform.startswith('darwin'):
+    #     ports = glob.glob('/dev/tty.w*')
+
     elif sys.platform.startswith('darwin'):
-        ports = glob.glob('/dev/tty.usb*')
+        ports = glob.glob('/dev/tty.usb*')        
     else:
         raise EnvironmentError('Unsupported platform')
 

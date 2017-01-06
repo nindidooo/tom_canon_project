@@ -8,7 +8,7 @@ boolean ledState = false;
 
 //STATION and POLLLING settings (most apply to master station 1)
 int master = 1;
-int station = 43;  // change station number here (BEFORE uploading to each node)
+int station = 48 + 10;  // change station number here 10+! (BEFORE uploading to each node)
 int FocusFlag = 0;
 
 // Global Button constants
