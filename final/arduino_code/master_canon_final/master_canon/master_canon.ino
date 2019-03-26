@@ -6,7 +6,7 @@
 long lastAction;
 unsigned long currentMillis;
 int actionStep = -1;
-int actionDelay = 100; //1000; //slowly cycle, so the serial monitor isn't blown out with text
+int actionDelay = 1000; //slowly cycle, so the serial monitor isn't blown out with text
 boolean actionLED;
 
 
@@ -29,12 +29,12 @@ int buttonState = 0;         // variable for reading the pushbutton status
 
 const byte numLEDs = 54;
 int ledPin[numLEDs];// = {13, 12, 11, 10, 9};
-int ledStatus[100];
+int ledStatus[numLEDs];
 int delayvals[50];
 
 
-//const byte buffSize = 400;
-const byte buffSize = 256;
+const byte buffSize = 400;
+//const byte buffSize = 256;
 char inputBuffer[buffSize];
 const char startMarker = '<';
 const char endMarker = '>';
@@ -159,9 +159,11 @@ void loop()
     int cam50 = 60;
     //          int DelayVal = ledStatus[11-7]; // delay vals start at index 4
 
-    if (DelayVal == 0) {
+    if (DelayVal == -1) {
+      ICSC.send(0, 'S', 1, NULL);
       ICSC.send(0, 'S', 0, NULL);
       ledStatus[1] = 0;
+      ShutterStatus = 0;
     }
 
     else
@@ -509,6 +511,8 @@ void loop()
 
 
     }
+      ledStatus[1] = 0;
+      ShutterStatus = 0;
   }
   // END shutter stuff ---------------
 
