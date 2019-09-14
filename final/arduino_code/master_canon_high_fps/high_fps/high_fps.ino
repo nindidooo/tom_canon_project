@@ -1,6 +1,5 @@
 #include <ICSC.h>
-#include <digitalWriteFast.h>
-#include <util/delay.h>
+
 #define SLAVE_COUNT 2
 
 long lastAction;
@@ -798,7 +797,7 @@ void switchLEDs() {
 
   for (byte n = 0; n <= numLEDs; n++) {
 
-    digitalWriteFast( ledPin[n], ledStatus[n]);
+    digitalWrite( ledPin[n], ledStatus[n]);
 
   }
 }
@@ -823,31 +822,31 @@ void sendToPC() {
 void HeartBeat(unsigned char src, char command, unsigned char len, char *data)
 {
 
-  digitalWriteFast(HeartBeatPin, HIGH);
-  digitalWriteFast(HeartBeatPin, LOW);
+  digitalWrite(HeartBeatPin, HIGH);
+  digitalWrite(HeartBeatPin, LOW);
 }
 
 void Shutter(unsigned char src, char command, unsigned char len, char *data)
 {
-  digitalWriteFast(ShutterPin, HIGH);
-  digitalWriteFast(HeartBeatPin, HIGH);
+  digitalWrite(ShutterPin, HIGH);
+  digitalWrite(HeartBeatPin, HIGH);
   //  delay(250);
-  digitalWriteFast(ShutterPin, LOW);
-  digitalWriteFast(HeartBeatPin, LOW);
+  digitalWrite(ShutterPin, LOW);
+  digitalWrite(HeartBeatPin, LOW);
 }
 
 
 void FocusOn(unsigned char src, char command, unsigned char len, char *data)
 {
 
-  digitalWriteFast(FocusPin, HIGH);
+  digitalWrite(FocusPin, HIGH);
 
 }
 
 void FocusOff(unsigned char src, char command, unsigned char len, char *data)
 {
 
-  digitalWriteFast(FocusPin, LOW);
+  digitalWrite(FocusPin, LOW);
 
 }
 void ButtonControl(const int buttonPin, const int ledPin) {
@@ -859,11 +858,11 @@ void ButtonControl(const int buttonPin, const int ledPin) {
   // if it is, the buttonState is HIGH:
   if (buttonState == LOW) { // usually buttonState is HIGH. Pressing the button makes buttonState low
     // turn LED on:
-    digitalWriteFast(ledPin, HIGH);
-    digitalWriteFast(HeartBeatPin, HIGH);
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(HeartBeatPin, HIGH);
   } else {
     // turn LED off:
-    digitalWriteFast(ledPin, LOW);
-    digitalWriteFast(HeartBeatPin, LOW);
+    digitalWrite(ledPin, LOW);
+    digitalWrite(HeartBeatPin, LOW);
   }
 }
