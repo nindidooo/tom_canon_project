@@ -7,6 +7,27 @@ import numpy as np
 
 # Ensure window is in centre of screen
 
+delays = [0, 10000, 5000, 4000, 3000, 2000, 1500, 1000, 950, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100, 90, 75, 50, 48, 30, 25, 24, 23, 22, 16, 12, 10, 5, 2, 1]
+
+def ShowChoice():
+    global DelayVal, table_cols, table_rows
+    DelayVal = v.get()
+    print DelayVal
+    delay_entry_val.set('')
+
+    out = 50 * [DelayVal]
+
+    table_rows = []
+    for i in range(30+10, 30+20):
+        table_cols = []
+        for j in range(5):
+            te = Entry(masterframe, relief=RIDGE)
+            te.grid(row=i, column=j, sticky=NSEW)
+            te.insert(END, '%d' % delays[int(DelayVal)])
+            table_cols.append(te)
+        table_rows.append(table_cols)
+    getTableVals()
+
 
 def center(toplevel):
     toplevel.update_idletasks()
@@ -25,19 +46,22 @@ def center(toplevel):
 FocusStatus = 0
 ReverseStatus = 0
 ShutterStatus = 0
-DelayVal = 0
+DelayVal = 0.
+DelayVal_float = 0.
+
 LoopVal = 0
 AdvancedStatus = 0
 
 root = Tk()
 center(root)
-root.minsize(width=1000, height=600)
+root.minsize(width=1175, height=800)
 center(root)
 root.title("BULLET TIME")
 
 root.attributes('-topmost', True)
 root.lift()
 root.attributes('-topmost', False)
+
 # the next line must come after  root = Tk() so that a StringVar()
 # can be created in checkForData.
 import arduinoCheckForData as cD  # so we can refer to its variables
@@ -102,13 +126,14 @@ def mainScreen():
     # labelBB_V2_entrytext = Label(masterframe, width=20, height=2, text='Camera 1 Apex delay') 
 
     labelC = Label(masterframe, width=15)              # Delay Value Slider
-    labelD = Label(masterframe, width=20, height=1, text='Delay value (ms)')    # Text in Enter box
+    labelC_float = Label(masterframe, width=15)        # Delay float Value Slider
+    labelD = Label(masterframe, width=20, height=1, text='Delay value (FPS)')    # Text in Enter box
     labelLoop = Label(masterframe, width=5, height=2)                              # Looper
-    labelF = Label(masterframe, width=100, height=2, text='Camera 1\
-                            Camera 2\
-                            Camera 3\
-                            Camera 4\
-                            Camera 5')                              
+    # labelF = Label(masterframe, width=100, height=2, text='Camera 1\
+    #                         Camera 2\
+    #                         Camera 3\
+    #                         Camera 4\
+    #                         Camera 5')                              
 
 
     # Focus
@@ -140,61 +165,110 @@ def mainScreen():
 
 
     # slider
-    slider = Scale(masterframe, from_=0, to=1000, length=500, tickinterval=100, orient=HORIZONTAL)
-    slider.config(command=slide)
+    # slider = Scale(masterframe, from_=10000, to=0, length=450, tickinterval=1000, resolution=1, orient=HORIZONTAL)
+    # slider.config(command=slide)
+
+    # slider_float = Scale(masterframe, from_=0.0, to=0.9, length=100, tickinterval=50, resolution=0.25, orient=HORIZONTAL)
+    # slider_float.config(command=slide_float)
+
+    rowr = 0
+    for val, fps in enumerate(delays):
+
+        btn_select = Radiobutton(masterframe, 
+                      text=fps,
+                      padx = 0, 
+                      variable=v, 
+                      command=ShowChoice,
+                      value=val)
+
+        # if val >= len(delays)/2:
+        #     print val
+        #     rowr = 1
+        #     colr = val - len(delays)/2
+        # else: 
+        #     rowr = 0
+        #     colr = val
+        #     btn_select.pack()
+
+        if val % 5 == 0:
+            print val
+            rowr += 1
+            colr = 0
+            # colr = val - len(delays)/2
+        else: 
+            
+            colr +=1
+            btn_select.pack()
+
+        btn_select.grid(row=rowr, column=colr, sticky=NSEW)
 
     # Enter ms value:
     global delay_entry_val, delay_entry
     delay_entry_val = StringVar(masterframe, value='1')
-    delay_entry = Entry(masterframe, text=delay_entry_val)
-    delay_entry.bind("<Return>", lambda event: slider.set(int(delay_entry.get())))
-    delay_entry.grid(row=5)
+    print 'delay_entry_val', delay_entry_val
+    # delay_entry = Entry(masterframe, text=delay_entry_val)
+    # delay_entry.bind("<Return>", lambda event: slider.set(float(delay_entry.get())))
+    # delay_entry.bind("<Return>", lambda event: btn_select.set(float(delay_entry.get())))
+    # delay_entry.grid(row=25)
 
     # Table Setup
-    global table_rows, table_cols, te
+    global table_rows, table_cols, te, DelayVal
 
-    table_rows = []
-    for i in range(10, 20):
-        table_cols = []
-        for j in range(5):
-            te = Entry(masterframe, relief=RIDGE)
-            te.grid(row=i, column=j, sticky=NSEW)
-            te.insert(END, '%d' % (i))
-            table_cols.append(te)
-        table_rows.append(table_cols)
+    # table_rows = []
+    # for i in range(10, 20):
+    #     table_cols = []
+    #     for j in range(5):
+    #         te = Entry(masterframe, relief=RIDGE)
+    #         te.grid(row=i, column=j, sticky=NSEW)
+    #         # te.insert(END, '%d' % (0))
+    #         te.insert(END, '%d' % delays[int(DelayVal)])
+    #         table_cols.append(te)
+    #     table_rows.append(table_cols)
 
     # SendButton
     SendButton = Button(masterframe, text='Send Delays', command=getTableVals).grid()
 
     # Spacing
     # Focus
-    labelA.grid(row=0)
-    focusButton.grid(row=1)
+    labelA.grid(row=30+1)
+    focusButton.grid(row=30+3)
 
     # Reverse
-    labelR.grid(row=0)
-    reverseButton.grid(row=1, column=1)
+    labelR.grid(row=30+1)
+    reverseButton.grid(row=30+3, column=1)
 
     # Bounceback v1
-    labelBBV1.grid(row=0)
-    labelBBV2.grid(row=0)
-    bouncebackButtonV1.grid(row=2, column=1)
-    bouncebackButtonV2.grid(row=2, column=2)
-    # labelBB_V2_entrytext.grid(row=2, column=3)
+    labelBBV1.grid(row=30+2)
+    labelBBV2.grid(row=30+2)
+    bouncebackButtonV1.grid(row=30+4, column=1)
+    bouncebackButtonV2.grid(row=30+4, column=2)
+    # labelBB_V2_entrytext.grid(row=30+2, column=3)
 
     # Shutter
-    labelB.grid(row=1, column=2)
-    shutterButton.grid(row=1, column=4)
+    labelB.grid(row=30+3, column=2)
+    shutterButton.grid(row=30+3, column=4)
 
-    loop_entry.grid(row=1, column=3)
-    labelC.grid(row=2, columnspan=8)
-    slider.grid(row=4, columnspan=8)
-    labelD.grid(row=4,)
-    labelLoop.grid(row=1, column=4)
-    labelF.grid(row=9, columnspan=8)
+    loop_entry.grid(row=30+3, column=3)
+    labelC.grid(row=30+4, columnspan=8)
+    labelC_float.grid(row=30+5, columnspan=8)
+    # slider.grid(row=30+4, columnspan=8)
+    # slider_float.grid(row=30+3, columnspan=8)
+    labelD.grid(row=30+6,)
+    labelLoop.grid(row=30+3, column=4)
+    # labelF.grid(row=11, columnspan=8)
 
 # =========================
 # various callback functions
+
+
+def find_nearest(array,value):
+    value = int(value)
+    while value not in array:
+        if value >= max(delays):
+            value -=1
+        else:
+            value+=1
+    return value
 
 
 def func(event):
@@ -207,16 +281,36 @@ def getTableVals():
     global table, DelayVal, LoopVal, tframe, delay, data, model, table, table_rows, delay_entry_val, loop_entry
     LoopVal = loop_entry.get()
 
+    print 'here', DelayVal
+
     DelayVal = []
+
     for row in table_rows:
         for col in row:
-            DelayVal.append(col.get())
+            # first ensure that no invalid table values were entered
+            try:
+                # if int(col.get()) not in delays:
+                #     index = delays.index(find_nearest(delays, col.get()))
+                #     ShowChoice()
+                # else:
+                #     index = delays.index(int(col.get()))
+                # print 'col =', index
+                index = delays.index(int(col.get()))
+            except:
+                ShowChoice()
+
+            DelayVal.append(index)
+
+    print 'now here', DelayVal
     total_delay = 0
     DelayVal = map(int, DelayVal)
     for i in DelayVal:
         total_delay += i
     if total_delay == 0:
         DelayVal[0] = -1
+
+    print '\n3 here', DelayVal
+    print
     print FocusStatus, ShutterStatus, LoopVal, ReverseStatus, DelayVal
     
     aC.valToArduino(FocusStatus, ShutterStatus, LoopVal, ReverseStatus, DelayVal)
@@ -305,20 +399,24 @@ def ShutterFn(btn):
     ShutterStatus = 0
     btn.config(fg="white", bg="black")
 
-
     getTableVals()
 
+def slide_float(sval):
+    global DelayVal_float, DelayVal
+    DelayVal_float = float(sval)
+    # slide(DelayVal) 
 
 def slide(sval):
-    global FocusStatus, ReverseStatus, ShutterStatus, LoopVal, ReverseStatus, DelayVal, table_rows
-    sval = int(sval)
+    global FocusStatus, ReverseStatus, ShutterStatus, LoopVal, ReverseStatus, DelayVal, DelayVal_float, table_rows
+    sval = float(sval) + float(DelayVal_float)
+    print 'sval', sval
     delay_entry_val.set('')
 
     DelayVal = sval
     out = 50 * [DelayVal]
 
     table_rows = []
-    for i in range(10, 20):
+    for i in range(30+10, 20+10):
         table_cols = []
         for j in range(5):
             te = Entry(masterframe, relief=RIDGE)
@@ -340,9 +438,9 @@ def quit(event=None):
     root.destroy()
 
 
-quit_button = Button(text='Quit', command=quit)
-quit_button.pack(side='top', pady=5, fill='x')
-root.bind('<q>', quit)
+# quit_button = Button(text='Quit', command=quit)
+# quit_button.pack(side='top', pady=5, fill='x')
+# root.bind('<q>', quit)
 
 # =========================
 # code to ensure a clean exit
@@ -369,4 +467,6 @@ if __name__ == '__main__':
 
     root.lift()
     setupView()
+    v = IntVar()
+    v.set(0)        # initializing the choice
     root.mainloop()

@@ -1,7 +1,6 @@
-#include <time.h>
 #include <ICSC.h>
-//#include <digitalWrite.h>
-
+#include <digitalWriteFast.h>
+#include <util/delay.h>
 #define SLAVE_COUNT 2
 
 long lastAction;
@@ -9,6 +8,7 @@ unsigned long currentMillis;
 int actionStep = -1;
 int actionDelay = 1000; //slowly cycle, so the serial monitor isn't blown out with text
 boolean actionLED;
+float delays[50] = {0.1, 0.2, 0.25, 0.3333333333, 0.5, 0.6666666667, 1, 1.052631579, 1.111111111, 1.176470588, 1.25, 1.333333333, 1.428571429, 1.538461538, 1.666666667, 1.818181818, 2, 2.222222222, 2.5, 2.857142857, 3.333333333, 4, 5, 6.666666667, 10, 11.11111111, 13.33333333, 20, 20.83333333, 33.33333333, 40, 41.66666667, 41.70837504, 45.45454545, 62.5, 83.33333333, 100, 200, 500, 1000};
 
 //STATION and POLLLING settings (most apply to master station 1)
 int master = 1;
@@ -28,13 +28,13 @@ const int ShutterPin =  7;  // the number of the pin connected to Optocoupler Sh
 int buttonState = 0;         // variable for reading the pushbutton status
 
 const byte numLEDs = 54;
-int ledPin[numLEDs];// = {13, 12, 11, 10, 9};
+int ledPin[numLEDs]; // = {13, 12, 11, 10, 9};
 int ledStatus[numLEDs];
 int delayvals[50];
 
-const byte buffSize = 400;
+const byte buffSize = 4000;
 //const byte buffSize = 256;
-char inputBuffer[buffSize];
+char inputBuffer[4000];
 const char startMarker = '<';
 const char endMarker = '>';
 //const char endMarker = 'end';
@@ -48,7 +48,7 @@ unsigned long curMillis;
 
 unsigned long prevReplyToPCmillis = 0;
 unsigned long replyToPCinterval = 3500;
-
+int i = 1;
 long lastDebounceTime = 0;  // the last time the output pin was toggled
 int lastphys_shutter_state = 0;
 
@@ -171,54 +171,168 @@ void loop()
       if (ReverseStatus == 0) {
         // you can't realistically loop more than 1 time with 0 delay, so leave 0 delay outside of loopval loop
         while (LoopVal != 0) { // while LoopVal != 0
-          for (int i = cam1; i <= cam50; i++) {
-
-            //              Serial.print("<DelayVal_");
-            //              Serial.print(i-10);
-            //              Serial.print(" = ");
-            //              Serial.print(ledStatus[i-7]);
-            //              Serial.print(">");
-            //              delay(100);
-
-            ICSC.send(i, 'S', 0, NULL); // Shutter i
-
-            if (DelayVal != 0)
-            {
-
-              if (DelayVal == 1)
-                delayMicroseconds(0.8191998424 * 1 * 1000);
-              else if (DelayVal == 2)
-                delayMicroseconds(0.9103046487 * 2 * 1000);
-              else if (DelayVal == 3)
-                delayMicroseconds(0.9484942339 * 3 * 1000);
-              else if (DelayVal == 4)
-                delayMicroseconds(0.9593908629 * 4 * 1000);
-              else if (DelayVal == 5)
-                delayMicroseconds(0.9659639437 * 5 * 1000);
-              else if (DelayVal == 6)
-                delayMicroseconds(0.9678779935 * 6 * 1000);
-              else if (DelayVal == 7)
-                delayMicroseconds(0.9722222222 * 7 * 1000);
-              else if (DelayVal == 8)
-                delayMicroseconds(0.971659919 * 8 * 1000);
-              else if (DelayVal == 9)
-                delayMicroseconds(0.9791208791 * 9 * 1000);
-              else
-                delay(ledStatus[i - 7]);
-            }
-
-            ledStatus[1] = 0;         // shutter OFF
-
-            FocusStatus = ledStatus[0];
-            ShutterStatus = ledStatus[1];
-            //            Serial.print("<FocusStatus = ");
-            //            Serial.print(FocusStatus);
-            //            Serial.print(" ledStatus[0]  ");
-            //            Serial.print(ledStatus[0] );
-            //            Serial.print(">");
 
 
-          }
+ICSC.send( 11 , 'S', 0, NULL);
+ICSC.send( 12 , 'S', 0, NULL);
+ICSC.send( 13 , 'S', 0, NULL);
+ICSC.send( 14 , 'S', 0, NULL);
+ICSC.send( 15 , 'S', 0, NULL);
+ICSC.send( 16 , 'S', 0, NULL);
+ICSC.send( 17 , 'S', 0, NULL);
+ICSC.send( 18 , 'S', 0, NULL);
+ICSC.send( 19 , 'S', 0, NULL);
+ICSC.send( 20 , 'S', 0, NULL);
+ICSC.send( 21 , 'S', 0, NULL);
+ICSC.send( 22 , 'S', 0, NULL);
+ICSC.send( 23 , 'S', 0, NULL);
+ICSC.send( 24 , 'S', 0, NULL);
+ICSC.send( 25 , 'S', 0, NULL);
+ICSC.send( 26 , 'S', 0, NULL);
+ICSC.send( 27 , 'S', 0, NULL);
+ICSC.send( 28 , 'S', 0, NULL);
+ICSC.send( 29 , 'S', 0, NULL);
+ICSC.send( 30 , 'S', 0, NULL);
+ICSC.send( 31 , 'S', 0, NULL);
+ICSC.send( 32 , 'S', 0, NULL);
+ICSC.send( 33 , 'S', 0, NULL);
+ICSC.send( 34 , 'S', 0, NULL);
+ICSC.send( 35 , 'S', 0, NULL);
+ICSC.send( 36 , 'S', 0, NULL);
+ICSC.send( 37 , 'S', 0, NULL);
+ICSC.send( 38 , 'S', 0, NULL);
+ICSC.send( 39 , 'S', 0, NULL);
+ICSC.send( 40 , 'S', 0, NULL);
+ICSC.send( 41 , 'S', 0, NULL);
+ICSC.send( 42 , 'S', 0, NULL);
+ICSC.send( 43 , 'S', 0, NULL);
+ICSC.send( 44 , 'S', 0, NULL);
+ICSC.send( 45 , 'S', 0, NULL);
+ICSC.send( 46 , 'S', 0, NULL);
+ICSC.send( 47 , 'S', 0, NULL);
+ICSC.send( 48 , 'S', 0, NULL);
+ICSC.send( 49 , 'S', 0, NULL);
+ICSC.send( 50 , 'S', 0, NULL);
+ICSC.send( 51 , 'S', 0, NULL);
+ICSC.send( 52 , 'S', 0, NULL);
+ICSC.send( 53 , 'S', 0, NULL);
+ICSC.send( 54 , 'S', 0, NULL);
+ICSC.send( 55 , 'S', 0, NULL);
+ICSC.send( 56 , 'S', 0, NULL);
+ICSC.send( 57 , 'S', 0, NULL);
+ICSC.send( 58 , 'S', 0, NULL);
+ICSC.send( 59 , 'S', 0, NULL);
+ICSC.send( 60 , 'S', 0, NULL);
+
+          
+//          for (i = cam1; i <= cam50; i++) {
+////
+////                          Serial.print("<DelayVal_");
+////                          Serial.print(DelayVal);
+////                          Serial.print(i-10);
+////                          Serial.print(" = ");
+////                          Serial.print(ledStatus[i-7]);
+////                          Serial.print(">");
+////                          delay(100);
+//
+//            ICSC.send(i, 'S', 0, NULL); // Shutter i
+//
+//            if (DelayVal != 0)
+//            {
+//            if (DelayVal == 1)
+//              _delay_us(10);
+//            else if (DelayVal == 2)
+//                delayMicroseconds(200);
+//            else if (DelayVal == 3)
+//                delayMicroseconds(250);
+//            else if (DelayVal == 4)
+//                delayMicroseconds(0.3333333333 * 1000);
+//            else if (DelayVal == 5)
+//                delayMicroseconds(0.5 * 1000);
+//            else if (DelayVal == 6)
+//                delayMicroseconds(0.6666666667 * 1000);
+//            else if (DelayVal == 7)
+//                delayMicroseconds(1 * 1000);
+//            else if (DelayVal == 8)
+//                delayMicroseconds(1.052631579 * 1000);
+//            else if (DelayVal == 9)
+//                delayMicroseconds(1.111111111 * 1000);
+//            else if (DelayVal == 10)
+//                delayMicroseconds(1.176470588 * 1000);
+//            else if (DelayVal == 11)
+//                delayMicroseconds(1.25 * 1000);
+//            else if (DelayVal == 12)
+//                delayMicroseconds(1.333333333 * 1000);
+//            else if (DelayVal == 13)
+//                delayMicroseconds(1.428571429 * 1000);
+//            else if (DelayVal == 14)
+//                delayMicroseconds(1.538461538 * 1000);
+//            else if (DelayVal == 15)
+//                delayMicroseconds(1.666666667 * 1000);
+//            else if (DelayVal == 16)
+//                delayMicroseconds(1.818181818 * 1000);
+//            else if (DelayVal == 17)
+//                delayMicroseconds(2.0 * 1000);
+//            else if (DelayVal == 18)
+//                delayMicroseconds(2.222222222 * 1000);
+//            else if (DelayVal == 19)
+//                delayMicroseconds(2.5 * 1000);
+//            else if (DelayVal == 20)
+//                delayMicroseconds(2.857142857 * 1000);
+//            else if (DelayVal == 21)
+//                delayMicroseconds(3.333333333 * 1000);
+//            else if (DelayVal == 22)
+//                delayMicroseconds(4 * 1000);
+//            else if (DelayVal == 23)
+//                delayMicroseconds(5 * 1000);
+//            else if (DelayVal == 24)
+//                delayMicroseconds(6.666666667 * 1000);
+//            else if (DelayVal == 25)
+//                delayMicroseconds(10 * 1000);
+//            else if (DelayVal == 26)
+//                delayMicroseconds(11.11111111 * 1000);
+//            else if (DelayVal == 27)
+//                delayMicroseconds(13.33333333 * 1000);
+//            else if (DelayVal == 28)
+//                delay(20.0);
+//            else if (DelayVal == 29)
+//                delay(20.83333);
+//            else if (DelayVal == 30)
+//                delay(33.33333);
+//            else if (DelayVal == 31)
+//                delay(40.0);
+//            else if (DelayVal == 32)
+//                delay(41.66666667);
+//            else if (DelayVal == 33)
+//                delay(41.70837504);
+//            else if (DelayVal == 34)
+//                delay(45.45454545);
+//            else if (DelayVal == 35)
+//                delay(62.5);
+//            else if (DelayVal == 36)
+//                delay(83.33333333);
+//            else if (DelayVal == 37)
+//                delay(100);
+//            else if (DelayVal == 38)
+//                delay(200);
+//            else if (DelayVal == 39)
+//                delay(500);
+//            else if (DelayVal == 40)
+//                delay(1000);
+//            }
+//
+//            ledStatus[1] = 0;         // shutter OFF
+//
+//            FocusStatus = ledStatus[0];
+//            ShutterStatus = ledStatus[1];
+//            //            Serial.print("<FocusStatus = ");
+//            //            Serial.print(FocusStatus);
+//            //            Serial.print(" ledStatus[0]  ");
+//            //            Serial.print(ledStatus[0] );
+//            //            Serial.print(">");
+//
+//
+//          }
           if (LoopVal >= 0)
             LoopVal = LoopVal - 1; // decrement LoopVal
         }
@@ -684,7 +798,7 @@ void switchLEDs() {
 
   for (byte n = 0; n <= numLEDs; n++) {
 
-    digitalWrite( ledPin[n], ledStatus[n]);
+    digitalWriteFast( ledPin[n], ledStatus[n]);
 
   }
 }
@@ -709,31 +823,31 @@ void sendToPC() {
 void HeartBeat(unsigned char src, char command, unsigned char len, char *data)
 {
 
-  digitalWrite(HeartBeatPin, HIGH);
-  digitalWrite(HeartBeatPin, LOW);
+  digitalWriteFast(HeartBeatPin, HIGH);
+  digitalWriteFast(HeartBeatPin, LOW);
 }
 
 void Shutter(unsigned char src, char command, unsigned char len, char *data)
 {
-  digitalWrite(ShutterPin, HIGH);
-  digitalWrite(HeartBeatPin, HIGH);
+  digitalWriteFast(ShutterPin, HIGH);
+  digitalWriteFast(HeartBeatPin, HIGH);
   //  delay(250);
-  digitalWrite(ShutterPin, LOW);
-  digitalWrite(HeartBeatPin, LOW);
+  digitalWriteFast(ShutterPin, LOW);
+  digitalWriteFast(HeartBeatPin, LOW);
 }
 
 
 void FocusOn(unsigned char src, char command, unsigned char len, char *data)
 {
 
-  digitalWrite(FocusPin, HIGH);
+  digitalWriteFast(FocusPin, HIGH);
 
 }
 
 void FocusOff(unsigned char src, char command, unsigned char len, char *data)
 {
 
-  digitalWrite(FocusPin, LOW);
+  digitalWriteFast(FocusPin, LOW);
 
 }
 void ButtonControl(const int buttonPin, const int ledPin) {
@@ -745,11 +859,11 @@ void ButtonControl(const int buttonPin, const int ledPin) {
   // if it is, the buttonState is HIGH:
   if (buttonState == LOW) { // usually buttonState is HIGH. Pressing the button makes buttonState low
     // turn LED on:
-    digitalWrite(ledPin, HIGH);
-    digitalWrite(HeartBeatPin, HIGH);
+    digitalWriteFast(ledPin, HIGH);
+    digitalWriteFast(HeartBeatPin, HIGH);
   } else {
     // turn LED off:
-    digitalWrite(ledPin, LOW);
-    digitalWrite(HeartBeatPin, LOW);
+    digitalWriteFast(ledPin, LOW);
+    digitalWriteFast(HeartBeatPin, LOW);
   }
 }

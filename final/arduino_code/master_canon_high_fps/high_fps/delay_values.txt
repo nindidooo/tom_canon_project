@@ -1,0 +1,80 @@
+if (DelayVal == 10000)
+    delayMicroseconds(0.1 * 1000);
+else if (DelayVal == 5000)
+    delayMicroseconds(0.2 * 1000);
+else if (DelayVal == 4000)
+    delayMicroseconds(0.25 * 1000);
+else if (DelayVal == 3000)
+    delayMicroseconds(0.3333333333 * 1000);
+else if (DelayVal == 2000)
+    delayMicroseconds(0.5 * 1000);
+else if (DelayVal == 1500)
+    delayMicroseconds(0.6666666667 * 1000);
+else if (DelayVal == 1000)
+    delayMicroseconds(1 * 1000);
+else if (DelayVal == 950)
+    delayMicroseconds(1.052631579 * 1000);
+else if (DelayVal == 900)
+    delayMicroseconds(1.111111111 * 1000);
+else if (DelayVal == 850)
+    delayMicroseconds(1.176470588 * 1000);
+else if (DelayVal == 800)
+    delayMicroseconds(1.25 * 1000);
+else if (DelayVal == 750)
+    delayMicroseconds(1.333333333 * 1000);
+else if (DelayVal == 700)
+    delayMicroseconds(1.428571429 * 1000);
+else if (DelayVal == 650)
+    delayMicroseconds(1.538461538 * 1000);
+else if (DelayVal == 600)
+    delayMicroseconds(1.666666667 * 1000);
+else if (DelayVal == 550)
+    delayMicroseconds(1.818181818 * 1000);
+else if (DelayVal == 500)
+    delayMicroseconds(2 * 1000);
+else if (DelayVal == 450)
+    delayMicroseconds(2.222222222 * 1000);
+else if (DelayVal == 400)
+    delayMicroseconds(2.5 * 1000);
+else if (DelayVal == 350)
+    delayMicroseconds(2.857142857 * 1000);
+else if (DelayVal == 300)
+    delayMicroseconds(3.333333333 * 1000);
+else if (DelayVal == 250)
+    delayMicroseconds(4 * 1000);
+else if (DelayVal == 200)
+    delayMicroseconds(5 * 1000);
+else if (DelayVal == 150)
+    delayMicroseconds(6.666666667 * 1000);
+else if (DelayVal == 100)
+    delayMicroseconds(10 * 1000);
+else if (DelayVal == 90)
+    delayMicroseconds(11.11111111 * 1000);
+else if (DelayVal == 75)
+    delayMicroseconds(13.33333333 * 1000);
+else if (DelayVal == 50)
+    delayMicroseconds(20 * 1000);
+else if (DelayVal == 48)
+    delayMicroseconds(20.83333333 * 1000);
+else if (DelayVal == 30)
+    delayMicroseconds(33.33333333 * 1000);
+else if (DelayVal == 25)
+    delayMicroseconds(40 * 1000);
+else if (DelayVal == 24)
+    delayMicroseconds(41.66666667 * 1000);
+else if (DelayVal == 23)
+    delayMicroseconds(41.70837504 * 1000);
+else if (DelayVal == 22)
+    delayMicroseconds(45.45454545 * 1000);
+else if (DelayVal == 16)
+    delayMicroseconds(62.5 * 1000);
+else if (DelayVal == 12)
+    delayMicroseconds(83.33333333 * 1000);
+else if (DelayVal == 10)
+    delayMicroseconds(100 * 1000);
+else if (DelayVal == 5)
+    delayMicroseconds(200 * 1000);
+else if (DelayVal == 2)
+    delay(0.5);
+else if (DelayVal == 1)
+    delay(1);
