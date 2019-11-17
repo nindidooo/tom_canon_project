@@ -90,6 +90,7 @@ def selectPort():
     radioVar = StringVar()
 
     lst = aC.listSerialPorts()
+    print lst
 
     l1 = Label(masterframe, width=15, height=10, text="Select Port")
     l1.pack()
@@ -163,14 +164,6 @@ def mainScreen():
     loop_entry.pack()
     LoopVal.set("1")
 
-
-    # slider
-    # slider = Scale(masterframe, from_=10000, to=0, length=450, tickinterval=1000, resolution=1, orient=HORIZONTAL)
-    # slider.config(command=slide)
-
-    # slider_float = Scale(masterframe, from_=0.0, to=0.9, length=100, tickinterval=50, resolution=0.25, orient=HORIZONTAL)
-    # slider_float.config(command=slide_float)
-
     rowr = 0
     for val, fps in enumerate(delays):
 
@@ -206,24 +199,12 @@ def mainScreen():
     global delay_entry_val, delay_entry
     delay_entry_val = StringVar(masterframe, value='1')
     print 'delay_entry_val', delay_entry_val
-    # delay_entry = Entry(masterframe, text=delay_entry_val)
-    # delay_entry.bind("<Return>", lambda event: slider.set(float(delay_entry.get())))
-    # delay_entry.bind("<Return>", lambda event: btn_select.set(float(delay_entry.get())))
-    # delay_entry.grid(row=25)
 
     # Table Setup
     global table_rows, table_cols, te, DelayVal
 
-    # table_rows = []
-    # for i in range(10, 20):
-    #     table_cols = []
-    #     for j in range(5):
-    #         te = Entry(masterframe, relief=RIDGE)
-    #         te.grid(row=i, column=j, sticky=NSEW)
-    #         # te.insert(END, '%d' % (0))
-    #         te.insert(END, '%d' % delays[int(DelayVal)])
-    #         table_cols.append(te)
-    #     table_rows.append(table_cols)
+    # set up table
+    ShowChoice()
 
     # SendButton
     SendButton = Button(masterframe, text='Send Delays', command=getTableVals).grid()
@@ -281,8 +262,6 @@ def getTableVals():
     global table, DelayVal, LoopVal, tframe, delay, data, model, table, table_rows, delay_entry_val, loop_entry
     LoopVal = loop_entry.get()
 
-    print 'here', DelayVal
-
     DelayVal = []
 
     for row in table_rows:
@@ -301,7 +280,6 @@ def getTableVals():
 
             DelayVal.append(index)
 
-    print 'now here', DelayVal
     total_delay = 0
     DelayVal = map(int, DelayVal)
     for i in DelayVal:
@@ -309,8 +287,6 @@ def getTableVals():
     if total_delay == 0:
         DelayVal[0] = -1
 
-    print '\n3 here', DelayVal
-    print
     print FocusStatus, ShutterStatus, LoopVal, ReverseStatus, DelayVal
     
     aC.valToArduino(FocusStatus, ShutterStatus, LoopVal, ReverseStatus, DelayVal)
